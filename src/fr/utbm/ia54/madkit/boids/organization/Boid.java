@@ -299,8 +299,8 @@ public class Boid extends AbstractAgent implements ReferenceableAgent {
 		tmp2.normaliser();
 		
 		// on regarde le produit scalaire...
-		//if ( tmp2.point(tmp) < groupe.visibleAngleCos)
-			//return false;
+		if ( tmp2.point(tmp) < groupe.visibleAngleCos)
+			return false;
 			
 		return true;
 	}

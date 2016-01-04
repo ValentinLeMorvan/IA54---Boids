@@ -16,7 +16,7 @@ public class Population
     public static final double DEFAULT_SEPARATION_FORCE = 1.0;
     public static final double DEFAULT_COHESION_FORCE = 0.0001;
     public static final double DEFAULT_ALIGNEMENT_FORCE = 1.0;
-    public static final double DEFAULT_OBJECTIVE_FORCE = 0.0001;
+    public static final double DEFAULT_OBJECTIVE_FORCE = 0.00001;
 
     public static final double DEFAULT_REPULSION_DIST = 100.0;
     public static final double DEFAULT_SEPARATION_DIST = 10.0;
@@ -61,7 +61,7 @@ public class Population
 		distCohesion = DEFAULT_COHESION_DIST;
 		distAlignement = DEFAULT_ALIGNEMENT_DIST;
 		distRepulsion = DEFAULT_REPULSION_DIST;
-		visibleAngle = 90.0;
+		visibleAngle = 190.0;
 		separationForce = DEFAULT_SEPARATION_FORCE;
 		cohesionForce = DEFAULT_COHESION_FORCE;
 		alignementForce = DEFAULT_ALIGNEMENT_FORCE;
@@ -69,7 +69,7 @@ public class Population
 		objectiveForce = DEFAULT_OBJECTIVE_FORCE;
 		masse = 1.0;
 		vecteurAccel = 0.85;
-		visibleAngleCos = Math.cos(visibleAngle);
+		visibleAngleCos = Math.cos(Math.toRadians(visibleAngle));
     }
     
     public void setObjective(Vector2d objective){
