@@ -103,7 +103,7 @@ public class Environment extends Agent {
 		this.largeur = ilargeur;
 		this.hauteur = ihauteur;
 		this.boids = new ConcurrentHashMap<AgentAddress,PerceivedBoidBody>();
-		this.myGUI = new EnvironmentGui(ihauteur,ilargeur,this.boids,this);
+		this.myGUI = new EnvironmentGui(2*ihauteur,2*ilargeur,this.boids,this);
 		this.populations = new ArrayList<Population>();
 	}
 	

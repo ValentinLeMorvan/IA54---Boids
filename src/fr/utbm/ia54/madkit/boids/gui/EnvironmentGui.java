@@ -55,7 +55,7 @@ public class EnvironmentGui extends Frame {
 		 panel.addMouseListener(new MouseAdapter() {
 			 @Override
              public void mousePressed(MouseEvent e) {
-				 environment.clickOn(new Vector2d(e.getX(),e.getY()), 0);
+				 environment.clickOn(new Vector2d(e.getX()- panel.getLargeur()/2,e.getY() - panel.getHauteur()/2), 0);
 					
              }
 		 });
