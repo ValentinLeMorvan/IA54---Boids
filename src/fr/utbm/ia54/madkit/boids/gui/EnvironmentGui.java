@@ -5,12 +5,17 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Panel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
 
 import madkit.kernel.AgentAddress;
+import fr.utbm.ia54.madkit.boids.message.ActionMessage;
+import fr.utbm.ia54.madkit.boids.organization.Environment;
 import fr.utbm.ia54.madkit.boids.organization.Environment.PerceivedBoidBody;
+import fr.utbm.ia54.madkit.boids.utils.Vector2d;
 
 /**
  * L'interface graphique de la simulation de boids
@@ -20,6 +25,8 @@ import fr.utbm.ia54.madkit.boids.organization.Environment.PerceivedBoidBody;
  */
 public class EnvironmentGui extends Frame {
 	private static final long serialVersionUID = 6166914441888970939L;
+	
+	private Environment environment;
 	/**
 	 * Handler de fermeture de fenetre
 	 */
@@ -30,10 +37,11 @@ public class EnvironmentGui extends Frame {
 	 */
 	EnvironmentGuiPanel panel;
 	
-	public EnvironmentGui(int ihauteur, int ilargeur,Map<AgentAddress,PerceivedBoidBody> iboids) {
+	public EnvironmentGui(int ihauteur, int ilargeur,Map<AgentAddress,PerceivedBoidBody> iboids, Environment ienvironment) {
 		super();
 		handler = new Closer ();
 		panel = new EnvironmentGuiPanel(ihauteur,ilargeur,iboids);
+		this.environment = ienvironment;
 		
 		this.setTitle("Boids Simulation");
 		this.setSize(ilargeur,ihauteur);
@@ -43,6 +51,14 @@ public class EnvironmentGui extends Frame {
 		add("Center", panel);
 		this.setVisible(true);
 	//add("East", new ControlPanel(this));
+		
+		 panel.addMouseListener(new MouseAdapter() {
+			 @Override
+             public void mousePressed(MouseEvent e) {
+				 environment.clickOn(new Vector2d(e.getX(),e.getY()), 0);
+					
+             }
+		 });
     }
 	
 	public void setBoids(Map<AgentAddress, PerceivedBoidBody> boids) {
@@ -104,8 +120,8 @@ class EnvironmentGuiPanel extends Panel {
 	
 	public EnvironmentGuiPanel(int ihauteur, int ilargeur,Map<AgentAddress,PerceivedBoidBody> iboids) {
 		super();
-		largeur = ilargeur;
-		hauteur = ihauteur;
+		setLargeur(ilargeur);
+		setHauteur(ihauteur);
 		boids = iboids;
 	}
 	
@@ -123,9 +139,9 @@ class EnvironmentGuiPanel extends Panel {
 			// effacement de la zone de travail
 			bgColor = new Color(0.6F, 0.6F, 0.6F);
 			myCanvas.setColor(bgColor);
-			myCanvas.fillRect(0, 0, largeur * 2 - 1, hauteur * 2 - 1);
+			myCanvas.fillRect(0, 0, getLargeur() * 2 - 1, getHauteur() * 2 - 1);
 			myCanvas.setColor(Color.black);
-			myCanvas.drawRect(0, 0, largeur * 2 - 1, hauteur * 2 - 1);
+			myCanvas.drawRect(0, 0, getLargeur() * 2 - 1, getHauteur() * 2 - 1);
 						
 			// affichage des Boids
 			for (PerceivedBoidBody boid : boids.values()){
@@ -154,11 +170,11 @@ class EnvironmentGuiPanel extends Panel {
 		super.doLayout();
 
 		// initialisation des variables largeur et hauteur.
-		largeur = (int) (getSize().width  / 2);
-		hauteur = (int) (getSize().height / 2);
+		setLargeur((int) (getSize().width  / 2));
+		setHauteur((int) (getSize().height / 2));
 
 		// mise en place du double buffering pour l'affichage.
-		myImage    = createImage(largeur * 2, hauteur * 2);
+		myImage    = createImage(getLargeur() * 2, getHauteur() * 2);
 		myCanvas   = myImage.getGraphics();
 		myGraphics = getGraphics();
 	}
@@ -176,8 +192,8 @@ class EnvironmentGuiPanel extends Panel {
 		double cos;
 		double sin;
 
-		posX	  = largeur + new Double(boid.getPosition().x).intValue();
-		posY	  = hauteur + new Double(boid.getPosition().y).intValue();
+		posX	  = getLargeur() + new Double(boid.getPosition().x).intValue();
+		posY	  = getHauteur() + new Double(boid.getPosition().y).intValue();
 		direction = boid.getVitesse().getAngle();
 		cos	  = Math.cos(direction);
 		sin	  = Math.sin(direction);
@@ -196,5 +212,21 @@ class EnvironmentGuiPanel extends Panel {
 				posY - (int) ( 2 * sin - 2 * cos ),
 				posX - (int) ( 2 * cos - 2 * sin ),
 				posY - (int) ( 2 * sin + 2 * cos ) );
+	}
+
+	public int getLargeur() {
+		return largeur;
+	}
+
+	public void setLargeur(int largeur) {
+		this.largeur = largeur;
+	}
+
+	public int getHauteur() {
+		return hauteur;
+	}
+
+	public void setHauteur(int hauteur) {
+		this.hauteur = hauteur;
 	}
 }

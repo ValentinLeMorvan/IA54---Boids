@@ -127,11 +127,12 @@ public class BoidsSimulation {
 	 */
 	private void launchAllBoids() {
 		int boidNum = 0;
-		for(Map.Entry<Population,List<Boid>> e : boidsToLaunch.entrySet()) {			
+		for(Map.Entry<Population,List<Boid>> e : boidsToLaunch.entrySet()) {
 			for(Boid b : e.getValue()) {
 				boidNum++;
 				launchBoid(b,e.getKey(),"Boid"+boidNum);
 			}
+			launchPopulation(e.getKey());
 		}
 	}
 	
@@ -149,6 +150,11 @@ public class BoidsSimulation {
 		kernel.launchAgent(b, boidName,null,true);
 		environment.addBoid(p, b.getAddress(), initialPosition, initialVitesse);
 		if(Settings.isLogActivated) System.out.println("Lancement d'un boid à la position "+initialPosition+" et avec une vitesse de "+initialVitesse );
+	}
+	
+	private void launchPopulation(Population p){
+		environment.addPop(p);
+		
 	}
 	
 	private void killAllAgents() {

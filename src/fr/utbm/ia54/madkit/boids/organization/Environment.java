@@ -1,5 +1,6 @@
 package fr.utbm.ia54.madkit.boids.organization;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import madkit.kernel.Agent;
@@ -96,12 +97,14 @@ public class Environment extends Agent {
 	 * et les boids à leur position dans cet environnement
 	 */
 	private ConcurrentHashMap<AgentAddress,PerceivedBoidBody> boids;
+	private ArrayList<Population> populations;
 	
 	public Environment(int ihauteur, int ilargeur) {
 		this.largeur = ilargeur;
 		this.hauteur = ihauteur;
 		this.boids = new ConcurrentHashMap<AgentAddress,PerceivedBoidBody>();
-		this.myGUI = new EnvironmentGui(ihauteur,ilargeur,this.boids);
+		this.myGUI = new EnvironmentGui(ihauteur,ilargeur,this.boids,this);
+		this.populations = new ArrayList<Population>();
 	}
 	
 	public final void activate()
@@ -260,6 +263,15 @@ public class Environment extends Agent {
 		if(Settings.isLogActivated)println("Envt generatePerception");
 		this.broadcastMessage(OrganizationalSettings.boidsAndEnvtAndSchedulingGroupName.getName(), 
 				OrganizationalSettings.boidRoleName.getName(), new PerceptionMessage(boids));
+	}
+
+	public void clickOn(Vector2d position, int i) {
+		
+		populations.get(i).objective = position;
+	}
+
+	public void addPop(Population p) {
+			this.populations.add(p);
 	}
 	
 	
