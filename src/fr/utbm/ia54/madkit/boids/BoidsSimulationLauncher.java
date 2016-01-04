@@ -2,6 +2,7 @@ package fr.utbm.ia54.madkit.boids;
 import java.awt.Color;
 
 import fr.utbm.ia54.madkit.boids.organization.Boid;
+import fr.utbm.ia54.madkit.boids.utils.Vector2d;
 
 
 /**
@@ -40,6 +41,8 @@ public class BoidsSimulationLauncher {
 			simu.addBoid(new Boid(), pRed);
 		}
 		
+		pRed.setObjective(new Vector2d(0,0));
+		
 		//Initialisation de la population de boid pGreen : 20 boids
 		for(int i =0; i<20;i++){
 			simu.addBoid(new Boid(), pGreen);
@@ -49,6 +52,8 @@ public class BoidsSimulationLauncher {
 		for(int i =0; i<20;i++){
 			simu.addBoid(new Boid(), pBlue);
 		}
+
+		pBlue.setObjective(new Vector2d(0,0));
 		
 		simu.start();
 

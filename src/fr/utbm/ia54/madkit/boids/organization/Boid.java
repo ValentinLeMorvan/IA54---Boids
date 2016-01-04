@@ -151,7 +151,7 @@ public class Boid extends AbstractAgent implements ReferenceableAgent {
 	
 	/**
 	 * Un instant de vie du Boid.
-	 * Le corps du comportement du boid
+	 * Le coeur du comportement du boid
 	 */
 	private void think(Collection<PerceivedBoidBody> perception)
 	{
@@ -195,6 +195,12 @@ public class Boid extends AbstractAgent implements ReferenceableAgent {
 			    force.fois(Boid.obstaclesForce);
 			    influence.plus(force);
 			}
+			
+			if(groupe.objectiveOn){
+				force = goToObjective();
+				force.fois(groupe.objectiveForce);
+				influence.plus(force);
+			}
 	
 			// on borne la force appliquee.
 			if (influence.length() > groupe.maxForce)
@@ -211,6 +217,8 @@ public class Boid extends AbstractAgent implements ReferenceableAgent {
 		}
 	}
 	
+	
+
 	/**
 	 * Envoie à l'environnement l'influence émise par ce boid
 	 * @param force - l'influence émies par le boid
@@ -273,7 +281,7 @@ public class Boid extends AbstractAgent implements ReferenceableAgent {
 	
 	/**
 	 * @param Boid otherBoid : le Boid que l'on voit peut-etre.
-	 * @param double distance : la ditance de decision.
+	 * @param double distance : la distance de decision.
 	 * @return TRUE si on le voit, FALSE sinon.
 	 */
 	private boolean visible(PerceivedBoidBody otherBoid, double distance) {
@@ -283,7 +291,7 @@ public class Boid extends AbstractAgent implements ReferenceableAgent {
 		tmp = new Vector2d(otherBoid.getPosition());
 		tmp.moins(position);
 		
-		// si on est trop loin tand-pis.
+		// si on est trop loin tant-pis.
 		if ( tmp.length() > distance )
 			return false;
 				
@@ -291,84 +299,98 @@ public class Boid extends AbstractAgent implements ReferenceableAgent {
 		tmp2.normaliser();
 		
 		// on regarde le produit scalaire...
-		if ( tmp2.point(tmp) < groupe.visibleAngleCos)
-			return false;
+		//if ( tmp2.point(tmp) < groupe.visibleAngleCos)
+			//return false;
 			
 		return true;
 	}
 
 	/**
+	 * Force de SEPARATION
 	 * @return Vector2d force : retourne la force nécessaire à la separation d'un groupe de boids.
 	 */
 	private Vector2d separation(Collection<PerceivedBoidBody> otherBoids) {
+		//TODO [TP IA54 Boids] Compléter la Force de SEPARATION
 		Vector2d tmp = new Vector2d();
 		Vector2d force = new Vector2d();
-		double   len;
-
+		double len;
+		
 		force.setZero();
-		for (PerceivedBoidBody otherBoid : otherBoids) {
-			if ((otherBoid != null) && (otherBoid.getAddress() != this.getAddress()) 
-					&& (visible(otherBoid,groupe.distSeparation))) {
+		for(PerceivedBoidBody otherBoid : otherBoids) {
+			if((otherBoid != null) && (otherBoid.getAddress() != this.getAddress())
+					&& (visible(otherBoid, groupe.distSeparation)) && (otherBoid.getGroupe() == groupe)) {
 				tmp.setXY(position);
 				tmp.moins(otherBoid.getPosition());
 				len = tmp.length();
 				// force en 1/r
-				tmp.fois( 1 / (len*len) );
+				tmp.fois(1/(len*len));
 				force.plus(tmp);
 			}
 		}
+		
 		return force;
 	}
 
 	/**
+	 * Force de COHESION
 	 * @return Vector2d force : retourne la force nécessaire à la cohésion des boids.
 	 */
 	private Vector2d cohesion(Collection<PerceivedBoidBody> otherBoids)
 	{
-		int nbTot = 0;
+		//TODO [TP IA54 Boids] Compléter la Force de COHESION
 		Vector2d force = new Vector2d();
+		int nb= 0;
+		
 		force.setZero();
-		for (PerceivedBoidBody otherBoid : otherBoids) {
-			if ((otherBoid != null) && (otherBoid.getAddress() != this.getAddress())
-					&& (otherBoid.getGroupe() == groupe)&& (visible(otherBoid,groupe.distCohesion)) )
-			{
-				nbTot++;
+		for(PerceivedBoidBody otherBoid : otherBoids) {
+			if((otherBoid != null) && (otherBoid.getAddress() != this.getAddress())
+					&& (visible(otherBoid, groupe.distCohesion)) && (otherBoid.getGroupe() == groupe)) {
 				force.plus(otherBoid.getPosition());
+				nb++;
 			}
 		}
 		
-		// calcul du barycentre...
-		if (nbTot > 0)
-		{
-			force.fois(1 / nbTot);
-			force.moins(position);
-		}
+		if(nb > 0) {
+			force.fois(1./nb);
+			force.moins(this.position);
+		}		
 		return force;
 	}
 	
 	/**
+	 * Force d'ALIGNEMENT
 	 * @return Vector2d force : retourne la force nécessaire à l'alignement des boids.
 	 */
 	private Vector2d alignement(Collection<PerceivedBoidBody> otherBoids)
 	{
-		int nbTot = 0;
+		//TODO [TP IA54 Boids] Compléter la Force d'ALIGNEMENT
 		Vector2d tmp = new Vector2d();
 		Vector2d force = new Vector2d();
-		force.setZero();
+		int nb = 0;
 		
-		for (PerceivedBoidBody otherBoid : otherBoids) {
-			if ((otherBoid != null) && (otherBoid.getAddress() != this.getAddress()) 
-					&& (otherBoid.getGroupe() == groupe) && (visible(otherBoid,groupe.distAlignement))) {
-				nbTot++;
+		force.setZero();
+		for(PerceivedBoidBody otherBoid : otherBoids) {
+			if((otherBoid != null) && (otherBoid.getAddress() != this.getAddress())
+					&& (visible(otherBoid, groupe.distAlignement)) && (otherBoid.getGroupe() == groupe)) {
 				tmp.setXY(otherBoid.getVitesse());
-				tmp.fois( 1 / tmp.length() );
+				tmp.moins(otherBoid.getVitesse());
 				force.plus(tmp);
+				nb++;
 			}
 		}
+		if(nb > 0)
+			force.fois(1./nb);
 		
-		if (nbTot > 0) {
-			force.fois( 1 / nbTot );
-		}
+		return force;
+	}
+	
+	private Vector2d goToObjective() {
+		Vector2d force = new Vector2d();
+		Vector2d obj = groupe.objective;
+		
+		force.setXY(obj);
+		force.moins(this.position);
+		
 		return force;
 	}
 	

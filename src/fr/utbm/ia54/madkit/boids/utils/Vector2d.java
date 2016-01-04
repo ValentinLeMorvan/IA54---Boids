@@ -1,5 +1,6 @@
 package fr.utbm.ia54.madkit.boids.utils;
 
+import java.lang.Math;
 
 /**
  * Classe represente un vecteur dans un espace à 2 dimensions.

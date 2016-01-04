@@ -43,7 +43,7 @@ public class EnvironmentGui extends Frame {
 		add("Center", panel);
 		this.setVisible(true);
 	//add("East", new ControlPanel(this));
-    	}
+    }
 	
 	public void setBoids(Map<AgentAddress, PerceivedBoidBody> boids) {
 		this.panel.setBoids(boids);

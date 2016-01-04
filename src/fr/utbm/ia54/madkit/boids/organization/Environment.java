@@ -157,16 +157,18 @@ public class Environment extends Agent {
 				actor = ((ActionMessage)m).getSender();
 				
 				if(Settings.isLogActivated)println("Envt validateActions de l'agent"+actor.getName());
-				if (boids.containsKey(actor)) {
+				//TODO [TP IA54 Boids] Appliquer la force reçue au boids correspondant Compléter la Synchronization entre l'environnement(Agent lourd) et le scheduler
+				if(boids.containsKey(actor)) {
 					actionsCount++;
-					appliquerForce(((ActionMessage)m).getForce(),boids.get(actor));
+					appliquerForce(((ActionMessage)m).getForce(), boids.get(actor));
 				}
 				
 			//Il reçoît un message de synchronization du scheduler	
 			} else if(m instanceof SimulationStepMessage) {
 				if(Settings.isLogActivated)println("Envt a recu un SimulationStepMessage, il envoit un ACK");
-				//Sending ACK
+				//TODO [TP IA54 Boids] Compléter la Synchronization entre l'environnement(Agent lourd) et le scheduler : Envoie ACK
 				this.sendMessage(m.getSender(), new SimulationStepMessageACK());
+				
 				generatePerception();
 			}
 			
@@ -256,7 +258,8 @@ public class Environment extends Agent {
 	 */
 	private void generatePerception() {
 		if(Settings.isLogActivated)println("Envt generatePerception");
-		this.broadcastMessage(OrganizationalSettings.boidsAndEnvtAndSchedulingGroupName.getName(), OrganizationalSettings.boidRoleName.getName(), new PerceptionMessage(boids));
+		this.broadcastMessage(OrganizationalSettings.boidsAndEnvtAndSchedulingGroupName.getName(), 
+				OrganizationalSettings.boidRoleName.getName(), new PerceptionMessage(boids));
 	}
 	
 	

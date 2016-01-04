@@ -9,7 +9,7 @@ public interface Settings {
 	/**
      * Autorisation de "traverser" les murs
      */
-	public static final boolean traversMurs   =  true;
+	public static final boolean traversMurs   =  false;
 	
 	
 	/**

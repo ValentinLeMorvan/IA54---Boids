@@ -57,6 +57,10 @@ public class BoidScheduler extends Scheduler implements ReferenceableAgent {
 		this.addActivator(this.boidsActivator);
 	}
 	
+	/**
+	 * Coeur du comportement du scheduler
+	 * Synchronize les boids
+	 */
 	public final void live()
 	{
 		if(Settings.isLogActivated) println("Scheduler Live");
@@ -105,18 +109,18 @@ public class BoidScheduler extends Scheduler implements ReferenceableAgent {
 	protected final synchronized void incrementeIteration()
 	{
 		Iteration++;
-		//println("Iteration "+Iteration);
-		//Synchronization entre l'environnement(Agent lourd) et le scheduler
 		if(Settings.isLogActivated) println("Scheduler a envoyer un SimulationStepMessage, il attend un ACK");
-		this.sendMessage(OrganizationalSettings.boidsAndEnvtAndSchedulingGroupName.getName(), 
-				OrganizationalSettings.environmentRoleName.getName(), 
-				new SimulationStepMessage());
-		
+		//TODO [TP IA54 Boids] Compléter la Synchronization entre l'environnement(Agent lourd) et le scheduler
+		//Envoie de message
 		//Attente de la réponse de l'envt : ACK
+		this.sendMessage(OrganizationalSettings.boidsAndEnvtAndSchedulingGroupName.getName(),
+				OrganizationalSettings.environmentRoleName.getName(),
+				new SimulationStepMessage());
+		// Attendre la réponse de l'envt : ACK
 		boolean wait = true;
-		Message m;		
+		Message m;
 		while(wait) {
-			m  = this.waitNextMessage();
+			m = this.waitNextMessage();
 			if(m instanceof SimulationStepMessageACK) {
 				wait = false;
 				if(Settings.isLogActivated) println("ACK recu");
